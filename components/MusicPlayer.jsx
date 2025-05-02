@@ -15,22 +15,22 @@ export default function MusicPlayer() {
           {
             id: 1,
             name: "Mario Castle",
-            url: "https://playground.4geeks.com/sound/files/mario/songs/castle.mp3"
+            url: "https://playground.4geeks.com/sound/docs"
           },
           {
             id: 2,
             name: "Mario Star",
-            url: "https://playground.4geeks.com/sound/files/mario/songs/hurry-starman.mp3"
+            url: "https://playground.4geeks.com/sound/docs"
           },
           {
             id: 3,
             name: "Mario Overworld",
-            url: "https://playground.4geeks.com/sound/files/mario/songs/overworld.mp3"
+            url: "https://playground.4geeks.com/sound/docs"
           },
           {
             id: 4,
             name: "Mario Stage 1",
-            url: "https://playground.4geeks.com/sound/files/mario/songs/stage1.mp3"
+            url: "https://playground.4geeks.com/sound/docs"
           }
         ];
         
