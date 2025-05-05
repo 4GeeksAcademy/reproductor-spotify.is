@@ -6,35 +6,30 @@ export default function MusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef(null);
 
-  
   useEffect(() => {
     const fetchSongs = async () => {
       try {
+       
+        const response = await fetch('https://playground.4geeks.com/sound/songs'); 
 
-        const mockData = [
-          {
-            id: 1,
-            name: "Mario Castle",
-            url: "https://playground.4geeks.com/sound/docs"
-          },
-          {
-            id: 2,
-            name: "Mario Star",
-            url: "https://playground.4geeks.com/sound/docs"
-          },
-          {
-            id: 3,
-            name: "Mario Overworld",
-            url: "https://playground.4geeks.com/sound/docs"
-          },
-          {
-            id: 4,
-            name: "Mario Stage 1",
-            url: "https://playground.4geeks.com/sound/docs"
-          }
-        ];
-        
-        setSongs(mockData);
+       
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+          throw new Error("La respuesta no es un JSON válido");
+        }
+
+        const data = await response.json();
+
+       
+        console.log('Datos de la API:', data);
+
+        const formattedSongs = data.songs.map((song) => ({
+          id: song.id,
+          name: song.name,
+          url: song.url,
+        }));
+
+        setSongs(formattedSongs);
       } catch (error) {
         console.error('Error al cargar las canciones', error);
       }
@@ -43,33 +38,42 @@ export default function MusicPlayer() {
     fetchSongs();
   }, []); 
 
-  useEffect(() => {
-    if (songs.length > 0 && audioRef.current) {
-      audioRef.current.src = songs[currentIndex].url;
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
-  }, [currentIndex, songs]);
+  const playSong = (index) => {
+    setCurrentIndex(index);
+  };
 
-  const playSong = (index) => setCurrentIndex(index);
-  const playNext = () => setCurrentIndex((i) => (i + 1) % songs.length);
-  const playPrevious = () =>
+  const playNext = () => {
+    setCurrentIndex((i) => (i + 1) % songs.length);
+  };
+
+  const playPrevious = () => {
     setCurrentIndex((i) => (i - 1 + songs.length) % songs.length);
+  };
 
   const togglePlayPause = () => {
     if (isPlaying) {
       audioRef.current.pause();
       setIsPlaying(false);
     } else {
-      audioRef.current.play();
+      audioRef.current.play().catch((error) => {
+
+        console.error('Error al intentar reproducir el audio:', error);
+      });
       setIsPlaying(true);
     }
   };
 
+  useEffect(() => {
+    if (songs.length > 0 && audioRef.current) {
+      audioRef.current.src = 'https://playground.4geeks.com' + songs[currentIndex].url;
+
+    }
+  }, [currentIndex, songs]);
+
   return (
     <div style={{ backgroundColor: '#111', color: '#fff', height: '100vh', padding: '20px', fontFamily: 'sans-serif' }}>
       <h1 style={{ textAlign: 'center' }}>Reproductor de Música</h1>
-      
+
       <div style={{ maxHeight: '70%', overflowY: 'auto', marginBottom: '20px' }}>
         {songs.length === 0 ? (
           <div>Cargando canciones...</div>
